@@ -103,7 +103,7 @@
                         Author
                 </div>
                 <div class="input no-input">
-                        {{ $message->User->username !!}
+                        {{ $message->User->username }}
                 </div>
         </div>
 
@@ -112,7 +112,7 @@
                         Updated
                 </div>
                 <div class="input no-input">
-                        {{ $message->updated_at !!}
+                        {{ $message->updated_at }}
                 </div>
         </div>
 
@@ -122,7 +122,7 @@
                         Created
                 </div>
                 <div class="input no-input">
-                        {{ $message->created_at !!}
+                        {{ $message->created_at }}
                 </div>
         </div>
 
