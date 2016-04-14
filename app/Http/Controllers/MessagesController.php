@@ -378,7 +378,7 @@ class MessagesController extends Controller {
                 $directory = File::makeDirectory($destinationPath, 0770);
                 $file = fopen($destinationPath.'/'.$filename, 'w');
 
-                fputcsv($file, array('id', 'date', 'student', 'type', 'school'));
+                fputcsv($file, array('id', 'date', 'student', 'type', 'school', 'notes'));
 
                 foreach ($messages as $message) {
                     if (count($message->School) > 0) {
@@ -386,7 +386,7 @@ class MessagesController extends Controller {
                     } else {
                         $school = null;
                     }
-                    fputcsv($file, array($message->id, $message->updated_at, $message->Contact->fullName(), $message->MessageType->message_type_name, $school)); 
+                    fputcsv($file, array($message->id, $message->updated_at, $message->Contact->fullName(), $message->MessageType->message_type_name, $school, $message->contents)); 
                 }
 
                 $file = fclose($file);
