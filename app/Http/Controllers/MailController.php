@@ -34,7 +34,7 @@ class MailController extends Controller {
 
 	public function create(Request $request) {
 
-		$schools = $this->school->lists('school_name', 'id')->all();
+		$schools = $this->school->get()->sortBy('school_name')->pluck('school_name', 'id')->toArray();
 		$all_contacts = $this->contact->allStudents();
 		$contacts = array();
 		foreach ($all_contacts as $contact) {
@@ -143,6 +143,7 @@ class MailController extends Controller {
 						$message_log->attachment_id = $attachment->id;
 					}
 
+                    /*
 					$contents = "";
 
 					$body = $request->input('body');
@@ -157,8 +158,9 @@ class MailController extends Controller {
 					$contents .= "From: ".auth()->user()->email."\n";
 					$contents .= "Subject: ".$request->input('subject')."\n\n";
 					$contents .= "Message: ".$body;
+                     */
 
-					$message_log->contents = $contents;
+					$message_log->contents = $request->input('body');
 					
 					$message_log->save();
 				}

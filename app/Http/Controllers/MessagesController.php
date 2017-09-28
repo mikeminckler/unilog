@@ -51,8 +51,8 @@ class MessagesController extends Controller {
 	public function show($id) {
 
 		$message = $this->message->find($id);
-		$message_types = $this->message_type->orderBy('message_type_name')->lists('message_type_name', 'id')->all();
-		$schools = $this->school->lists('school_name', 'id')->all();
+		$message_types = $this->message_type->orderBy('message_type_name')->get()->pluck('message_type_name', 'id')->toArray();
+		$schools = $this->school->get()->sortBy('school_name')->pluck('school_name', 'id')->toArray();
 		$all_contacts = $this->contact->allStudents();
 		$contacts = array();
 		foreach ($all_contacts as $contact) {
@@ -66,8 +66,8 @@ class MessagesController extends Controller {
 
 	public function create(Request $request, $student_id = null) {
 
-		$message_types = $this->message_type->orderBy('message_type_name')->lists('message_type_name', 'id')->all();
-		$schools = $this->school->lists('school_name', 'id')->all();
+		$message_types = $this->message_type->orderBy('message_type_name')->get()->pluck('message_type_name', 'id')->toArray();
+		$schools = $this->school->get()->sortBy('school_name')->pluck('school_name', 'id')->toArray();
 		if (isset($student_id)) {
 			$student = $this->contact->find($student_id);
 		} else {

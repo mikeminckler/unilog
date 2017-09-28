@@ -18,7 +18,7 @@
 	<div id="feedback_container">
 		<div id="feedback">
 
-		@if(session()->has('success'))
+		@if (session()->has('success'))
 			<div class="success-header">Success</div>
 			<ul class="feedback">
 				<li class="feedback success">{!! session()->get('success') !!}</li>
@@ -46,7 +46,7 @@
 			</ul>
 		@endif
 
-		@if($errors->has())
+		@if (count($errors->all()) > 0)
 			<div class="error-header">Error</div>
 			<ul class="feedback">
 
