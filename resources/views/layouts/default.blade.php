@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 
-	<link href='http://fonts.googleapis.com/css?family=Open+Sans:400,300|Source+Sans+Pro:400,200,300|Source+Code+Pro:400,200|Poiret+One' rel='stylesheet' type='text/css'>	
+	<link href='//fonts.googleapis.com/css?family=Open+Sans:400,300|Source+Sans+Pro:400,200,300|Source+Code+Pro:400,200|Poiret+One' rel='stylesheet' type='text/css'>	
 	<link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.11.1/themes/smoothness/jquery-ui.css" />
     {!! Html::style('css/stylesheet.css') !!}
 
