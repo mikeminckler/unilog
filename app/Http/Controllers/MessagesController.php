@@ -145,11 +145,17 @@ class MessagesController extends Controller {
 					} else {
 						$message = new Message;
 					}
+
+                    if ($request->input('school_id')) {
+                        $school_id = $request->input('school_id');
+                    } else {
+                        $school_id = 0;
+                    }
 					
 					$message->contact_id = $contact_id;
 					$message->user_id = auth()->user()->id;
 					$message->message_type_id = $request->input('message_type_id');
-					$message->school_id = $request->input('school_id');
+					$message->school_id = $school_id;
 					$message->contents = $request->input('contents');
 
 				
