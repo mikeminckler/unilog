@@ -1,0 +1,2 @@
+#!/bin/bash
+mysqldump -u myschool_access -pNewcastle4400 -h moodle.brentwood.bc.ca myschool_brentwood contacts | mysql -u noto_user -pNewcastle22 noto_brentwood
