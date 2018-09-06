@@ -11,9 +11,13 @@ class Contact extends Model {
         return $this->hasMany('App\Message')->orderBy('updated_at', 'DESC');
     } 
 
-
 	public function fullName() {
 		return $this->name." ".$this->surname;
+	}
+
+    public function fullNameLastFirst() 
+    {
+		return $this->surname.", ".$this->name;
 	}
 
 	public function scopeSearch($query, $search) {

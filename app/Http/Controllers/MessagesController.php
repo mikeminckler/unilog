@@ -392,7 +392,7 @@ class MessagesController extends Controller {
                     } else {
                         $school = null;
                     }
-                    fputcsv($file, array($message->id, $message->updated_at, $message->Contact->fullName(), $message->MessageType->message_type_name, $school, $message->contents)); 
+                    fputcsv($file, array($message->id, $message->updated_at, $message->Contact->fullNameLastFirst(), $message->MessageType->message_type_name, $school, $message->contents)); 
                 }
 
                 $file = fclose($file);
