@@ -31,7 +31,8 @@ class Message extends Model {
 
 	public $rules = array(
 		'contact_id' => 'required',
-		'message_type_id' => 'required'
+		'message_type_id' => 'required',
+        'contents' => 'required'
 	);
 
 	public function searchTerms($query) {

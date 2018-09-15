@@ -43,12 +43,14 @@ class SchoolsController extends Controller {
 				$school = new School;
 			}
 
+            $input = $request->all();
+
 			$school->school_name = $request->input('school_name');
-			$school->contact_name = $request->input('contact_name');
-			$school->phone = $request->input('phone');
-			$school->email = $request->input('email');
-			$school->website = $request->input('website');
-			$school->application_url = $request->input('application_url');
+			$school->contact_name = array_get($input, 'contact_name') ?: '';
+			$school->phone = array_get($input, 'phone') ?: '';
+			$school->email = array_get($input, 'email') ?: '';
+			$school->website = array_get($input, 'website') ?: '';
+			$school->application_url = array_get($input, 'application_url') ?: '';
 			$school->save();
 
 			return redirect()->to('schools')->with(['success' => 'School <span class="mono">'.$school->school_name.'</span> saved']);

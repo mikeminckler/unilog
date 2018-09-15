@@ -10,7 +10,7 @@ class School extends Model {
 		
 	public $rules = array(
 		'school_name' => 'required',
-		'email' => 'email'
+		'email' => 'email|nullable'
 	);
 
 	public function Messages() {
