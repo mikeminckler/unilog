@@ -6,7 +6,9 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use Illuminate\Database\Eloquent\Collection;
-use File;
+
+use Illuminate\Http\File;
+use Illuminate\Support\Facades\Storage;
 
 use App\Message;
 use App\MessageType;
@@ -379,20 +381,15 @@ class MessagesController extends Controller {
             $messages = Message::processIds($request->input('message_id'));
 
             if ($messages->count()) {
-                $destinationPath = 'downloads/'.time().'-'.str_random(8);
+
                 $filename = 'export-'.str_random(8).'.csv';
-                $directory = File::makeDirectory($destinationPath, 0770);
-                $file = fopen($destinationPath.'/'.$filename, 'w');
+                $csv_file = storage_path('app/public/'.$filename);
+                $file = fopen($csv_file, 'w');
 
                 fputcsv($file, array('id', 'date', 'student', 'type', 'school', 'notes'));
 
                 foreach ($messages as $message) {
-                    if (count($message->School) > 0) {
-                        $school = $message->School->school_name;
-                    } else {
-                        $school = null;
-                    }
-                    fputcsv($file, array($message->id, $message->updated_at, $message->Contact->fullNameLastFirst(), $message->MessageType->message_type_name, $school, $message->contents)); 
+                    fputcsv($file, array($message->id, $message->updated_at, $message->Contact->fullNameLastFirst(), $message->MessageType->message_type_name, optional($message->School)->school_name, $message->contents)); 
                 }
 
                 $file = fclose($file);
@@ -401,7 +398,7 @@ class MessagesController extends Controller {
                         'Content-Type' => 'text/csv'
                 );
 
-                return response()->download($destinationPath.'/'.$filename, $filename, $headers);
+                return Storage::disk('public')->download($filename, $filename, $headers);
             }
         } else {
             return redirect()->back()->withError('Please select some records');
