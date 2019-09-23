@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Contact extends Model {
 
+    public $timestamps = false;
 
 	public function Messages() {
         return $this->hasMany('App\Message')->orderBy('updated_at', 'DESC');
@@ -22,7 +23,7 @@ class Contact extends Model {
 
 	public function scopeSearch($query, $search) {
 
-		$students = $this->where('user_type_id', '6')
+		$students = $this->where('user_status', '1')
 		// Need to active students in MySchool with emails before we can use the 1.	
 		//	->where('user_status', '1')
 				->where(function($query) use ($search) {
