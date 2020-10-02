@@ -23,6 +23,11 @@ class Contact extends Model {
 
 	public function scopeSearch($query, $search) {
 
+        //Old Student Model for types... replaced by chinese... 
+        //		$students = $this->where('user_type_id', '6')
+        
+        //update allstudentsBelow at the same time or grief.
+        //
 		$students = $this->where('user_status', '1')
 		// Need to active students in MySchool with emails before we can use the 1.	
 		//	->where('user_status', '1')
@@ -30,13 +35,14 @@ class Contact extends Model {
 					$query->where('name', 'LIKE', "%$search%")
 					->orWhere('surname', 'LIKE', "%$search%");
 			})->orderBy('surname');
-		return $students;
+       // dd($students->count());
+        return $students;
 
 	}
 
 	public function allStudents() {
 
-		return $this->where('user_type_id', '6')
+		return $this->where('user_status', '1')
 			//->where('user_status', '1')
 			->where('name', '!=', '')->orderBy('surname')->get();
 
