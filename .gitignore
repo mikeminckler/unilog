@@ -26,3 +26,4 @@ Homestead.json
 /storage/debugbar/
 composer.lock
 /tags
+.php_cs.cache

@@ -1,85 +1,75 @@
 <?php
 
-/*
-|--------------------------------------------------------------------------
-| Routes File
-|--------------------------------------------------------------------------
-|
-| Here is where you will register all of the routes in an application.
-| It's a breeze. Simply tell Laravel the URIs it should respond to
-| and give it the controller to call when that URI is requested.
-|
-*/
-
-//Auth::routes();
+use App\Http\Controllers\SessionsController;
+use App\Http\Controllers\MessagesController;
+use App\Http\Controllers\MessageTypesController;
+use App\Http\Controllers\SearchController;
+use App\Http\Controllers\SchoolsController;
+use App\Http\Controllers\MailController;
+use App\Http\Controllers\UsersController;
 
 Route::group(['middleware' => ['web']], function () {
+    Route::get('login', [SessionsController::class, 'index'])->name('login');
+    Route::post('login', [SessionsController::class, 'login'])->name('login');
+    Route::get('logout', [SessionsController::class, 'logout'])->name('logout');
 
-    Route::get('login', ['as' => 'login', 'uses' => 'SessionsController@index']);
-    Route::post('login', ['as' => 'login', 'uses' => 'SessionsController@login']);
-    Route::get('logout', ['as' => 'logout', 'uses' => 'SessionsController@logout']);
+    Route::get('/', [MessagesController::class, 'index'])->name('messages.index');
 
-	Route::get('/', ['as' => 'home', 'uses' => 'MessagesController@index']);
+    Route::group(['middleware' => ['auth']], function () {
 
-	// ajax stuff
-	Route::get('search', ['as' => 'search', 'uses' => 'SearchController@search']);
-	Route::get('search/student', ['as' => 'search.student', 'uses' => 'SearchController@student']);
-	Route::get('search/email', ['as' => 'search.email', 'uses' => 'SearchController@email']);
-	Route::get('start-date', ['as' => 'start-date', 'uses' => 'SessionsController@startDate']);
-	Route::get('end-date', ['as' => 'end-date', 'uses' => 'SessionsController@endDate']);
+        // ajax stuff
+        Route::post('search', [SearchController::class, 'search'])->name('search');
+        Route::post('search/student', [SearchController::class, 'student'])->name('search.student');
+        Route::post('search/email', [SearchController:class, 'email'])->name('search.email');
+        Route::get('start-date', [SessionsController::class, 'startDate'])->name('start-date');
+        Route::get('end-date', [SessionsController::class, 'endDate'])->name('end-date');
 
+        Route::get('messages/create', [MessagesController::class, 'create'])->name('messages.new');
+        Route::post('messages/create', [MessagesController::class, 'store'])->name('messages.new');
+        Route::post('messages/create/student', [MessagesController::class, 'create'])->name('messages.create');
 
-	Route::get('messages/create', ['as' => 'messages.new', 'uses' => 'MessagesController@create']);
-	Route::post('messages/create', ['as' => 'messages.new', 'uses' => 'MessagesController@store']);
-	Route::post('messages/create/student', ['as' => 'messages.create', 'uses' => 'MessagesController@create']);
+        Route::get('messages/delete', [MessagesController::class, 'delete'])->name('messages.delete');
+        Route::get('messages/delete-attachment', [MessagesController::class, 'deleteAttachment'])->name('message.delete.attachment');
 
-	Route::get('messages/delete', ['as' => 'message.delete', 'uses' => 'MessagesController@delete']);
-	Route::get('messages/delete-attachment', ['as' => 'message.delete.attachment', 'uses' => 'MessagesController@deleteAttachment']);
+        Route::get('messages/{id}', [MessagesController::class, 'show'])->name('messages.show')->where('id', '\d+');
+        Route::post('messages/{id}', [MessagesController::class, 'store'])->name('messages.update')->where('id', '\d+');
+        Route::get('messages/create/{id}', [MessagesController::class, 'create'])->name('messages.create.student')->where('id', '\d+');
+        Route::get('messages/attachments/{id}', [MessagesController::class, 'downloadAttachment'])->name('messages.attachment')->where('id', '\d+');
 
-	Route::get('messages/{id}', ['as' => 'messages.show', 'uses' => 'MessagesController@show'])->where('id', '\d+');
-	Route::post('messages/{id}', ['as' => 'messages.update', 'uses' => 'MessagesController@store'])->where('id', '\d+');
+        Route::get('schools/{id}', [MessagesController::class, 'showSchoolMessages'])->name('messages.schools')->where('id', '\d+');
+        Route::get('messages-type/{id}', [MessagesController::class, 'showMessageTypesMessages'])->name('messages.message-types')->where('id', '\d+');
+        Route::get('students/{id}', [MessagesController::class, 'showStudentMessages'])->name('messages.student')->where('id', '\d+');
 
-	Route::get('messages/create/{id}', ['as' => 'messages.create.student', 'uses' => 'MessagesController@create'])->where('id', '\d+');
+        Route::get('schools/{school_id}/messages-type/{messsage_type_id}', [MessagesController::class, 'showSchoolMessageTypeMessages'])->name('messages.school.message-type');
+        Route::get('messages-type/{messsage_type_id}/schools/{school_id}', [MessagesController::class, 'showMessageTypeSchoolMessages'])->name('messages.message-type.school');
 
-	Route::get('messages/attachments/{id}', ['as' => 'messages.attachment', 'uses' => 'MessagesController@downloadAttachment'])->where('id', '\d+');
+        Route::get('messages-type/{messsage_type_id}/students/{student_id}', [MessagesController::class, 'showMessageTypeStudentMessages'])->name('messages.message-type.student');
+        Route::get('students/{student_id}/messages-type/{messsage_type_id}', [MessagesController::class, 'showStudentMessageTypeMessages'])->name('messages.student.message-type');
+        Route::get('schools/{school_id}/students/{student_id}', [MessagesController::class, 'showSchoolStudentMessages'])->name('message.school.student');
+        Route::get('students/{student_id}/schools/{school_id}', [MessagesController::class, 'showStudentSchoolMessages'])->name('message.student.school');
 
+        Route::get('schools', [SchoolsController::class, 'index'])->name('schools');
+        Route::get('schools/create', [SchoolsController::class, 'create'])->name('schools.create');
+        Route::post('schools/create', [SchoolsController::class, 'store'])->name('schools.create');
+        Route::get('schools/edit/{id}', [SchoolsController::class, 'show'])->name('schools.show')->where('id', '\d+');
+        Route::post('schools/edit/{id}', [SchoolsController::class, 'store'])->name('schools.update')->where('id', '\d+');
 
-	Route::get('schools/{id}', ['as' => 'messages.schools', 'uses' => 'MessagesController@showSchoolMessages'])->where('id', '\d+');
-	Route::get('messages-type/{id}', ['as' => 'messages.message-types', 'uses' => 'MessagesController@showMessageTypesMessages'])->where('id', '\d+');
-	Route::get('students/{id}', ['as' => 'messages.student', 'uses' => 'MessagesController@showStudentMessages'])->where('id', '\d+');
+        Route::get('email', [MailController::class, 'create'])->name('emails.create');
+        Route::post('email', [MailController::class, 'send'])->name('emails.send');
+        Route::post('email/student', [MailController::class, 'create'])->name('emails.create');
 
-	Route::get('schools/{school_id}/messages-type/{messsage_type_id}', ['as' => 'messages.school.message-type', 'uses' => 'MessagesController@showSchoolMessageTypeMessages']);
-	Route::get('messages-type/{messsage_type_id}/schools/{school_id}', ['as' => 'messages.message-type.school', 'uses' => 'MessagesController@showMessageTypeSchoolMessages']);
+        Route::post('export-csv', [MessagesController::class, 'exportCSV'])->name('export-csv');
 
-	Route::get('messages-type/{messsage_type_id}/students/{student_id}', ['as' => 'messages.message-type.student', 'uses' => 'MessagesController@showMessageTypeStudentMessages']);
-	Route::get('students/{student_id}/messages-type/{messsage_type_id}', ['as' => 'messages.student.message-type', 'uses' => 'MessagesController@showStudentMessageTypeMessages']);
-	Route::get('schools/{school_id}/students/{student_id}', ['as' =>'message.school.student', 'uses' => 'MessagesController@showSchoolStudentMessages']);
-	Route::get('students/{student_id}/schools/{school_id}', ['as' =>'message.student.school', 'uses' => 'MessagesController@showStudentSchoolMessages']);
+        Route::get('message-types', [MessageTypesController::class, 'index'])->name('message-types');
+        Route::get('message-types/create', [MessageTypesController::class, 'create'])->name('message-types.create');
+        Route::post('message-types/create', [MessageTypesController::class, 'store'])->name('message-types.create');
+        Route::get('message-types/edit/{id}', [MessageTypesController::class, 'show'])->name('message-types.show')->where('id', '\d+');
+        Route::post('message-types/edit/{id}', [MessageTypesController::class, 'store'])->name('message-types.update')->where('id', '\d+');
 
-	Route::get('schools', ['as' => 'schools', 'uses' => 'SchoolsController@index']);
-	Route::get('schools/create', ['as' => 'schools.create', 'uses' => 'SchoolsController@create']);
-	Route::post('schools/create', ['as' => 'schools.create', 'uses' => 'SchoolsController@store']);
-	Route::get('schools/edit/{id}', ['as' => 'schools.show', 'uses' => 'SchoolsController@show'])->where('id', '\d+');
-	Route::post('schools/edit/{id}', ['as' => 'schools.update', 'uses' => 'SchoolsController@store'])->where('id', '\d+');
-
-
-	Route::get('email', ['as' => 'emails.create', 'uses' => 'MailController@create']);
-	Route::post('email', ['as' => 'emails.send', 'uses' => 'MailController@send']);
-	Route::post('email/student', ['as' => 'emails.create', 'uses' => 'MailController@create']);
-
-    Route::post('export-csv', ['as' => 'export-csv', 'uses' => 'MessagesController@exportCSV']);
-
-    Route::get('message-types', ['as' => 'message-types', 'uses' => 'MessageTypesController@index']);
-    Route::get('message-types/create', ['as' => 'message-types.create', 'uses' => 'MessageTypesController@create']);
-    Route::post('message-types/create', ['as' => 'message-types.create', 'uses' => 'MessageTypesController@store']);
-    Route::get('message-types/edit/{id}', ['as' => 'message-types.show', 'uses' => 'MessageTypesController@show'])->where('id', '\d+');
-    Route::post('message-types/edit/{id}', ['as' => 'message-types.update', 'uses' => 'MessageTypesController@store'])->where('id', '\d+');
-
-
-    Route::get('users', ['as' => 'users', 'uses' => 'UsersController@index']);
-    Route::get('users/create', ['as' => 'users.create', 'uses' => 'UsersController@create']);
-    Route::post('users/create', ['as' => 'users.create', 'uses' => 'UsersController@store']);
-    Route::get('users/{id}', ['as' => 'users.show', 'uses' => 'UsersController@show'])->where('id', '\d+');
-    Route::post('users/{id}', ['as' => 'users.update', 'uses' => 'UsersController@store'])->where('id', '\d+');
-
+        Route::get('users', [UsersController::class, 'index'])->name('users');
+        Route::get('users/create', [UsersController::class, 'create'])->name('users.create');
+        Route::post('users/create', [UsersController::class, 'store'])->name('users.create');
+        Route::get('users/{id}', [UsersController::class, 'show'])->name('users.show')->where('id', '\d+');
+        Route::post('users/{id}', [UsersController::class, 'store'])->name('users.update')->where('id', '\d+');
+    });
 });
